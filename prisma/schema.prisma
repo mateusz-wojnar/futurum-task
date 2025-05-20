@@ -1,0 +1,45 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Town {
+  KRAKOW    @map("Kraków")
+  WARSZAWA  @map("Warszawa")
+  KATOWICE  @map("Katowice")
+  WROCLAW   @map("Wrocław")
+  BYDGOSZCZ @map("Bydgoszcz")
+}
+
+model Product {
+  id        String     @id @default(uuid())
+  name      String
+  campaigns Campaign[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model Campaign {
+  id           String   @id @default(uuid())
+  name         String
+  keywords     String[]
+  bidAmount    Int
+  campaignFund Int
+  status       Boolean
+  town         Town
+  product      Product  @relation(fields: [productId], references: [id])
+  productId    String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
