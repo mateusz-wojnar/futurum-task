@@ -1,6 +1,9 @@
 "use client";
 
 import { format } from "date-fns";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+
 import {
   Card,
   CardContent,
@@ -9,17 +12,28 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
+
 import { ProductsWithCampaigns } from "@/modules/products/types";
 import { CampaignDataTable } from "@/modules/campaigns/ui/campaign-data-table";
 import { columns } from "@/modules/campaigns/ui/campaign-columns";
+import { CampaignCreateDialog } from "@/modules/campaigns/ui/campaign-create-dialog";
 
 interface ProductCardProps {
   product: ProductsWithCampaigns;
 }
 
 const ProductCard = ({ product }: ProductCardProps) => {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const router = useRouter();
 
   return (
@@ -38,9 +52,10 @@ const ProductCard = ({ product }: ProductCardProps) => {
         )}
       </CardContent>
       <CardFooter>
-        <Button onClick={() => router.push(`/products/${product.id}`)}>
-          Show product
-        </Button>
+        <CampaignCreateDialog
+          productId={product.id}
+          productName={product.name}
+        />
       </CardFooter>
     </Card>
   );

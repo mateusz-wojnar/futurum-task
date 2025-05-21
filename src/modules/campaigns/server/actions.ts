@@ -47,3 +47,47 @@ export const updateCampaign = async (
     return { error: "Failed to update campaign" };
   }
 };
+
+export const createCampaign = async (
+  productId: string,
+  values: z.infer<typeof CampaignEditFormSchema>
+) => {
+  const validatedData = CampaignEditFormSchema.safeParse(values);
+
+  if (!validatedData.success) {
+    return {
+      error: "Validation failed",
+      details: validatedData.error.format(),
+    };
+  }
+
+  const { name, keywords, bidAmount, campaignFund, status, town, radius } =
+    validatedData.data;
+
+  try {
+    await prisma.campaign.create({
+      data: {
+        name,
+        keywords,
+        bidAmount,
+        campaignFund,
+        status,
+        town: town as Town,
+        radius,
+        product: {
+          connect: { id: productId },
+        },
+      },
+    });
+
+    revalidatePath("/products");
+    revalidatePath("/campaigns");
+
+    return {
+      success: "Successfully created campaign",
+    };
+  } catch (error) {
+    console.error(error);
+    return { error: "Failed to create campaign" };
+  }
+};
