@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/db";
-import ProductCard from "./product_components/product-card";
+import ProductCard from "../product_components/product-card";
 
 export default async function Home() {
   const products = await prisma.product.findMany();
