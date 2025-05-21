@@ -12,16 +12,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 
 import { ProductsWithCampaigns } from "@/modules/products/types";
 import { CampaignDataTable } from "@/modules/campaigns/ui/campaign-data-table";
@@ -37,7 +27,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
   const router = useRouter();
 
   return (
-    <Card className="min-h-[100px] min-w-full m-4 md:m-2">
+    <Card className="min-h-[100px] m-4 md:m-2">
       <CardHeader>
         <CardTitle>{product.name}</CardTitle>
         <CardDescription>

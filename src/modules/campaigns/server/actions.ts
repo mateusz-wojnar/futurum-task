@@ -92,18 +92,21 @@ export const createCampaign = async (
   }
 };
 
-
 export const deleteCampaign = async (id: string) => {
-  if (!id) return {error: "No campaign provided"}
+  if (!id) return { error: "No campaign provided" };
 
   try {
     await prisma.campaign.delete({
       where: {
-        id 
-      }
-    })
+        id,
+      },
+    });
+
+    revalidatePath("/products");
+    revalidatePath("/campaigns");
+    return { success: "Campaign deleted" };
   } catch (error) {
-    console.error(error)
-    return {error: "Failed to delete campaign."}
+    console.error(error);
+    return { error: "Failed to delete campaign." };
   }
-}
+};

@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { CampaignEditDialog } from "./campaign-edit-dialog";
 import { TOWN_DISPLAY_NAMES } from "@/modules/constants";
+import { CampaignDeleteAlert } from "./campaign-delete-alert";
 
 export const columns: ColumnDef<Campaign>[] = [
   {
@@ -100,7 +101,15 @@ export const columns: ColumnDef<Campaign>[] = [
     cell: ({ row }) => {
       const campaign = row.original;
 
-      return <CampaignEditDialog campaign={campaign} />;
+      return (
+        <>
+          <CampaignEditDialog campaign={campaign} />
+          <CampaignDeleteAlert
+            campaignId={campaign.id}
+            campaignName={campaign.name}
+          />
+        </>
+      );
     },
   },
 ];

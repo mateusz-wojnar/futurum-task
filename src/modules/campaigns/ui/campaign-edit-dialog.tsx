@@ -26,12 +26,14 @@ import { z } from "zod";
 import { updateCampaign } from "../server/actions";
 import { CampaignFormSchema } from "../schemas";
 
+
 interface Props {
   campaign: Campaign;
 }
 
 export const CampaignEditDialog = ({ campaign }: Props) => {
   const [open, setOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const onSubmit = async (values: z.infer<typeof CampaignFormSchema>) => {
     const res = await updateCampaign(campaign.id, values);
@@ -46,7 +48,7 @@ export const CampaignEditDialog = ({ campaign }: Props) => {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DropdownMenu>
+      <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
             <span className="sr-only">Open menu</span>
@@ -62,12 +64,7 @@ export const CampaignEditDialog = ({ campaign }: Props) => {
               <span>Edit</span>
             </DropdownMenuItem>
           </DialogTrigger>
-          <DropdownMenuSeparator />
-          <DialogTrigger asChild>
-            <DropdownMenuItem>
-              <span className="text-red-400">Delete</span>
-            </DropdownMenuItem>
-          </DialogTrigger>
+          {/* <DropdownMenuSeparator /> */}
         </DropdownMenuContent>
       </DropdownMenu>
       <DialogContent className="max-h-[90vh] flex flex-col">
