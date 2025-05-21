@@ -10,7 +10,10 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { CampaignEditForm } from "./campaign-edit-form";
+import { CampaignForm } from "./campaign-form";
+import { z } from "zod";
+import { CampaignFormSchema } from "../schemas";
+import { createCampaign } from "../server/actions";
 
 interface Props {
   productId: string;
@@ -19,6 +22,17 @@ interface Props {
 
 export const CampaignCreateDialog = ({ productId, productName }: Props) => {
   const [open, setOpen] = useState(false);
+
+  const onSubmit = async (values: z.infer<typeof CampaignFormSchema>) => {
+    const res = await createCampaign(productId, values);
+
+    if (res.success) {
+      console.log("Campaign created!");
+      setOpen(false);
+    } else {
+      console.error(res.error);
+    }
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -33,9 +47,10 @@ export const CampaignCreateDialog = ({ productId, productName }: Props) => {
         </DialogHeader>
 
         <div className="overflow-y-auto px-1 mt-4 flex-1">
-          <CampaignEditForm
+          <CampaignForm
             productId={productId}
-            closeDialog={() => setOpen(false)}
+            onSubmit={onSubmit}
+            onCancel={() => setOpen(false)}
           />
         </div>
 
@@ -43,7 +58,9 @@ export const CampaignCreateDialog = ({ productId, productName }: Props) => {
           <Button variant="outline" onClick={() => setOpen(false)}>
             Cancel
           </Button>
-          {/* You can put a submit button here if your form supports submit externally */}
+          <Button variant="default" type="submit" form="campaign-form">
+            Submit
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

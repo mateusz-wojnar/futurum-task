@@ -1,16 +1,16 @@
 "use server";
 
 import { z } from "zod";
-import { CampaignEditFormSchema } from "../schemas";
+import { CampaignFormSchema } from "../schemas";
 import { prisma } from "@/lib/db";
 import { Town } from "@/generated/prisma";
 import { revalidatePath } from "next/cache";
 
 export const updateCampaign = async (
   id: string,
-  values: z.infer<typeof CampaignEditFormSchema>
+  values: z.infer<typeof CampaignFormSchema>
 ) => {
-  const validatedData = CampaignEditFormSchema.safeParse(values);
+  const validatedData = CampaignFormSchema.safeParse(values);
 
   if (!validatedData.success) {
     return {
@@ -50,9 +50,9 @@ export const updateCampaign = async (
 
 export const createCampaign = async (
   productId: string,
-  values: z.infer<typeof CampaignEditFormSchema>
+  values: z.infer<typeof CampaignFormSchema>
 ) => {
-  const validatedData = CampaignEditFormSchema.safeParse(values);
+  const validatedData = CampaignFormSchema.safeParse(values);
 
   if (!validatedData.success) {
     return {
@@ -91,3 +91,19 @@ export const createCampaign = async (
     return { error: "Failed to create campaign" };
   }
 };
+
+
+export const deleteCampaign = async (id: string) => {
+  if (!id) return {error: "No campaign provided"}
+
+  try {
+    await prisma.campaign.delete({
+      where: {
+        id 
+      }
+    })
+  } catch (error) {
+    console.error(error)
+    return {error: "Failed to delete campaign."}
+  }
+}

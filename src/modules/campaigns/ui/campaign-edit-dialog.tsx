@@ -20,8 +20,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { CampaignEditForm } from "./campaign-edit-form";
+import { CampaignForm } from "./campaign-form";
 import { useState } from "react";
+import { z } from "zod";
+import { updateCampaign } from "../server/actions";
+import { CampaignFormSchema } from "../schemas";
 
 interface Props {
   campaign: Campaign;
@@ -29,6 +32,17 @@ interface Props {
 
 export const CampaignEditDialog = ({ campaign }: Props) => {
   const [open, setOpen] = useState(false);
+
+  const onSubmit = async (values: z.infer<typeof CampaignFormSchema>) => {
+    const res = await updateCampaign(campaign.id, values);
+
+    if (res.success) {
+      console.log("Campaign updated!");
+      setOpen(false);
+    } else {
+      console.error(res.error);
+    }
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -43,11 +57,6 @@ export const CampaignEditDialog = ({ campaign }: Props) => {
           <DropdownMenuLabel className="text-lg font-medium">
             Actions
           </DropdownMenuLabel>
-          <DropdownMenuItem
-            onClick={() => navigator.clipboard.writeText(campaign.id)}
-          >
-            Test
-          </DropdownMenuItem>
           <DialogTrigger asChild>
             <DropdownMenuItem>
               <span>Edit</span>
@@ -56,7 +65,7 @@ export const CampaignEditDialog = ({ campaign }: Props) => {
           <DropdownMenuSeparator />
           <DialogTrigger asChild>
             <DropdownMenuItem>
-              <span>Delete</span>
+              <span className="text-red-400">Delete</span>
             </DropdownMenuItem>
           </DialogTrigger>
         </DropdownMenuContent>
@@ -70,13 +79,19 @@ export const CampaignEditDialog = ({ campaign }: Props) => {
         </DialogHeader>
 
         <div className="overflow-y-auto px-1 mt-4 flex-1">
-          <CampaignEditForm
+          <CampaignForm
             campaign={campaign}
-            closeDialog={() => setOpen(false)}
+            onSubmit={onSubmit}
+            onCancel={() => setOpen(false)}
           />
         </div>
         <DialogFooter className="pt-4">
-          <Button type="submit">Confirm</Button>
+          <Button variant="outline" onClick={() => setOpen(false)}>
+            Cancel
+          </Button>
+          <Button variant="default" type="submit" form="campaign-form">
+            Submit
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

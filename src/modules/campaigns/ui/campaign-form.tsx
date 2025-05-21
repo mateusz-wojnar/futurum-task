@@ -9,7 +9,7 @@ import { Campaign, Town } from "@/generated/prisma";
 
 import { updateCampaign } from "../server/actions";
 import { KEYWORD_SUGGESTIONS, TOWN_DISPLAY_NAMES } from "../../constants";
-import { CampaignEditFormSchema } from "../schemas";
+import { CampaignFormSchema } from "../schemas";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -46,44 +46,41 @@ import {
 import { cn } from "@/lib/utils";
 
 interface Props {
-  campaign?: Campaign;
-  onSubmit: (values: z.infer<typeof CampaignEditFormSchema>) => Promise<void>
-  onCancel ?
+  campaign?: Campaign; // edit if present, otherwise create
+  productId?: string; // only needed when creating
+  onSubmit: (values: z.infer<typeof CampaignFormSchema>) => Promise<void>; // passed down handler
+  onCancel?: () => void; //to close dialogs
 }
 
-export const CampaignEditForm = ({ campaign, closeDialog }: Props) => {
+export const CampaignForm = ({ campaign, onSubmit, onCancel }: Props) => {
   const [isPending, startTransition] = useTransition();
 
-
-  const form = useForm<z.infer<typeof CampaignEditFormSchema>>({
-    resolver: zodResolver(CampaignEditFormSchema),
+  const form = useForm<z.infer<typeof CampaignFormSchema>>({
+    resolver: zodResolver(CampaignFormSchema),
     defaultValues: {
-      name: campaign.name,
-      keywords: campaign.keywords,
-      bidAmount: campaign.bidAmount,
-      campaignFund: campaign.campaignFund,
-      status: campaign.status,
-      town: campaign.town,
-      radius: campaign.radius,
+      name: campaign?.name ?? "",
+      keywords: campaign?.keywords ?? [""],
+      bidAmount: campaign?.bidAmount ?? 0,
+      campaignFund: campaign?.campaignFund ?? 0,
+      status: campaign?.status ?? false,
+      town: campaign?.town ?? "KRAKOW",
+      radius: campaign?.radius ?? 0,
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof CampaignEditFormSchema>) => {
-    startTransition(async () => {
-      const res = await updateCampaign(campaign.id, values);
-
-      if (res.success) {
-        console.log("Campaign updated!");
-        closeDialog();
-      } else {
-        console.error(res.error);
-      }
+  const handleSubmit = async (values: z.infer<typeof CampaignFormSchema>) => {
+    startTransition(() => {
+      onSubmit(values);
     });
   };
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form
+        onSubmit={form.handleSubmit(handleSubmit)}
+        id="campaign-form"
+        className="space-y-8"
+      >
         <FormField
           control={form.control}
           name="name"
@@ -303,9 +300,9 @@ export const CampaignEditForm = ({ campaign, closeDialog }: Props) => {
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={isPending}>
-          Submit
-        </Button>
+        {/* <Button type="submit" disabled={isPending}>
+          {campaign ? "Update" : "Create"}
+        </Button> */}
       </form>
     </Form>
   );
