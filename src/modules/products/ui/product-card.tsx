@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { ProductsWithCampaigns } from "@/modules/products/types";
 import { CampaignDataTable } from "@/modules/campaigns/ui/campaign-data-table";
-import { columns } from "@/modules/campaigns/campaign-columns";
+import { columns } from "@/modules/campaigns/ui/campaign-columns";
 
 interface ProductCardProps {
   product: ProductsWithCampaigns;
@@ -23,7 +23,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
   const router = useRouter();
 
   return (
-    <Card className="min-h-[100px] min-w-[400px]">
+    <Card className="min-h-[100px] min-w-full m-4 md:m-2">
       <CardHeader>
         <CardTitle>{product.name}</CardTitle>
         <CardDescription>

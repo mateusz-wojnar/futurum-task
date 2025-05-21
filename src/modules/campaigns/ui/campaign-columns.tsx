@@ -1,7 +1,20 @@
 "use client";
 
+import { MoreHorizontal } from "lucide-react";
+import { ArrowUpDown } from "lucide-react";
 import { Campaign } from "@/generated/prisma";
 import { ColumnDef } from "@tanstack/react-table";
+
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { CampaignEditDialog } from "./campaign-edit-dialog";
 
 const TOWN_DISPLAY_NAMES: Record<string, string> = {
   KRAKOW: "Kraków",
@@ -19,6 +32,17 @@ export const columns: ColumnDef<Campaign>[] = [
   {
     accessorKey: "keywords",
     header: "Keywords",
+    cell: ({ row }) => {
+      const keywords = row.getValue("keywords") as string[];
+      const preview = keywords.slice(0, 2).join(", ");
+      const full = keywords.join(", ");
+
+      return (
+        <span title={full}>
+          {keywords.length > 2 ? `${preview},...` : preview}
+        </span>
+      );
+    },
   },
   {
     accessorKey: "bidAmount",
@@ -60,10 +84,30 @@ export const columns: ColumnDef<Campaign>[] = [
   },
   {
     accessorKey: "town",
-    header: "Town",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Town
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
     cell: ({ row }) => {
       const rawValue = row.getValue("town") as string;
       return TOWN_DISPLAY_NAMES[rawValue] || rawValue;
+    },
+  },
+
+  //Adding actions definitions
+  {
+    id: "actions",
+    cell: ({ row }) => {
+      const campaign = row.original;
+
+      return <CampaignEditDialog campaign={campaign} />;
     },
   },
 ];
