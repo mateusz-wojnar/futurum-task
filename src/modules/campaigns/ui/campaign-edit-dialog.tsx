@@ -20,15 +20,18 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { CampaignEditForm } from "../campaign-edit-form";
+import { CampaignEditForm } from "./campaign-edit-form";
+import { useState } from "react";
 
 interface Props {
   campaign: Campaign;
 }
 
 export const CampaignEditDialog = ({ campaign }: Props) => {
+  const [open, setOpen] = useState(false);
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
@@ -58,15 +61,21 @@ export const CampaignEditDialog = ({ campaign }: Props) => {
           </DialogTrigger>
         </DropdownMenuContent>
       </DropdownMenu>
-      <DialogContent>
+      <DialogContent className="max-h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle>Edit campaign</DialogTitle>
           <DialogDescription>
             Currently editing: {campaign.name}
           </DialogDescription>
         </DialogHeader>
-        <CampaignEditForm campaign={campaign} />
-        <DialogFooter>
+
+        <div className="overflow-y-auto px-1 mt-4 flex-1">
+          <CampaignEditForm
+            campaign={campaign}
+            closeDialog={() => setOpen(false)}
+          />
+        </div>
+        <DialogFooter className="pt-4">
           <Button type="submit">Confirm</Button>
         </DialogFooter>
       </DialogContent>

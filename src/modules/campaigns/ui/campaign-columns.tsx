@@ -2,7 +2,7 @@
 
 import { MoreHorizontal } from "lucide-react";
 import { ArrowUpDown } from "lucide-react";
-import { Campaign } from "@/generated/prisma";
+import { Campaign, Town } from "@/generated/prisma";
 import { ColumnDef } from "@tanstack/react-table";
 
 import { Button } from "@/components/ui/button";
@@ -15,14 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { CampaignEditDialog } from "./campaign-edit-dialog";
-
-const TOWN_DISPLAY_NAMES: Record<string, string> = {
-  KRAKOW: "Kraków",
-  WARSZAWA: "Warszawa",
-  KATOWICE: "Katowice",
-  WROCLAW: "Wrocław",
-  BYDGOSZCZ: "Bydgoszcz",
-};
+import { TOWN_DISPLAY_NAMES } from "@/modules/constants";
 
 export const columns: ColumnDef<Campaign>[] = [
   {
@@ -96,8 +89,8 @@ export const columns: ColumnDef<Campaign>[] = [
       );
     },
     cell: ({ row }) => {
-      const rawValue = row.getValue("town") as string;
-      return TOWN_DISPLAY_NAMES[rawValue] || rawValue;
+      const rawValue = row.getValue("town") as Town;
+      return TOWN_DISPLAY_NAMES[rawValue] ?? rawValue;
     },
   },
 
