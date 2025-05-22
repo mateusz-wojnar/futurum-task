@@ -52,7 +52,6 @@ export const CampaignCreateDialog = ({ productId, productName }: Props) => {
           <CampaignForm
             productId={productId}
             onSubmit={onSubmit}
-            onCancel={() => setOpen(false)}
           />
         </div>
 

@@ -77,7 +77,6 @@ export const CampaignEditDialog = ({ campaign }: Props) => {
           <CampaignForm
             campaign={campaign}
             onSubmit={onSubmit}
-            onCancel={() => setOpen(false)}
           />
         </div>
         <DialogFooter className="pt-4">
