@@ -14,45 +14,6 @@ export const TOWN_DISPLAY_NAMES: Record<Town, string> = {
   [Town.BYDGOSZCZ]: "Bydgoszcz",
 };
 
-export const CAMPAIGN_KEYWORDS = [
-  {
-    value: "meta",
-    label: "Meta",
-  },
-  {
-    value: "instagram",
-    label: "Instagram",
-  },
-  {
-    value: "facebook",
-    label: "Facebook",
-  },
-  {
-    value: "google",
-    label: "Google",
-  },
-  {
-    value: "ads",
-    label: "Ads",
-  },
-  {
-    value: "linkedin",
-    label: "LinkedIn",
-  },
-  {
-    value: "indeed",
-    label: "Indeed",
-  },
-  {
-    value: "close",
-    label: "Close",
-  },
-  {
-    value: "waiting",
-    label: "Waiting",
-  },
-];
-
 export const KEYWORD_SUGGESTIONS = [
   { value: "meta", label: "Meta" },
   { value: "instagram", label: "Instagram" },

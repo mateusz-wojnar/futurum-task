@@ -16,7 +16,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
@@ -64,7 +63,6 @@ export const CampaignEditDialog = ({ campaign }: Props) => {
               <span>Edit</span>
             </DropdownMenuItem>
           </DialogTrigger>
-          {/* <DropdownMenuSeparator /> */}
         </DropdownMenuContent>
       </DropdownMenu>
       <DialogContent className="max-h-[90vh] flex flex-col">

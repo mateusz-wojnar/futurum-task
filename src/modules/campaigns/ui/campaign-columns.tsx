@@ -1,31 +1,25 @@
 "use client";
 
-import { MoreHorizontal } from "lucide-react";
-import { ArrowUpDown } from "lucide-react";
 import { Campaign, Town } from "@/generated/prisma";
 import { ColumnDef } from "@tanstack/react-table";
 
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { CampaignEditDialog } from "./campaign-edit-dialog";
 import { TOWN_DISPLAY_NAMES } from "@/modules/constants";
 import { CampaignDeleteAlert } from "./campaign-delete-alert";
+import { DataTableColumnHeader } from "./campaign-data-table-column";
 
 export const columns: ColumnDef<Campaign>[] = [
   {
     accessorKey: "name",
-    header: "Name",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Name" />
+    ),
   },
   {
     accessorKey: "keywords",
-    header: "Keywords",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Keywords" />
+    ),
     cell: ({ row }) => {
       const keywords = row.getValue("keywords") as string[];
       const preview = keywords.slice(0, 2).join(", ");
@@ -40,7 +34,11 @@ export const columns: ColumnDef<Campaign>[] = [
   },
   {
     accessorKey: "bidAmount",
-    header: () => <div className="text-right">Bid amount</div>,
+    header: ({ column }) => (
+      <div className="">
+        <DataTableColumnHeader column={column} title="Bid amount" />
+      </div>
+    ),
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue("bidAmount"));
       const formatted = new Intl.NumberFormat("en-US", {
@@ -48,12 +46,16 @@ export const columns: ColumnDef<Campaign>[] = [
         currency: "USD",
       }).format(amount);
 
-      return <div className="text-right font-medium">{formatted}</div>;
+      return <div className="font-medium">{formatted}</div>;
     },
   },
   {
     accessorKey: "campaignFund",
-    header: () => <div className="text-right">Campaign fund</div>,
+    header: ({ column }) => (
+      <div className="">
+        <DataTableColumnHeader column={column} title="Fund" />
+      </div>
+    ),
     cell: ({ row }) => {
       const fund = parseFloat(row.getValue("campaignFund"));
       const formatted = new Intl.NumberFormat("en-US", {
@@ -61,12 +63,14 @@ export const columns: ColumnDef<Campaign>[] = [
         currency: "USD",
       }).format(fund);
 
-      return <div className="text-right font-medium">{formatted}</div>;
+      return <div className=" font-medium">{formatted}</div>;
     },
   },
   {
     accessorKey: "status",
-    header: "Status",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Status" />
+    ),
     cell: ({ row }) => {
       const status = row.getValue("status") as boolean;
       return status ? (
@@ -78,20 +82,22 @@ export const columns: ColumnDef<Campaign>[] = [
   },
   {
     accessorKey: "town",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Town
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Town" />
+    ),
     cell: ({ row }) => {
       const rawValue = row.getValue("town") as Town;
       return TOWN_DISPLAY_NAMES[rawValue] ?? rawValue;
+    },
+  },
+  {
+    accessorKey: "radius",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Radius" />
+    ),
+    cell: ({ row }) => {
+      const rawValue = row.getValue("radius");
+      return `${rawValue} km`;
     },
   },
 

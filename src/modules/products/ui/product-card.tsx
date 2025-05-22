@@ -1,8 +1,6 @@
 "use client";
 
 import { format } from "date-fns";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
 
 import {
   Card,
@@ -23,8 +21,6 @@ interface ProductCardProps {
 }
 
 const ProductCard = ({ product }: ProductCardProps) => {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const router = useRouter();
 
   return (
     <Card className="min-h-[100px] m-4 md:m-2">
