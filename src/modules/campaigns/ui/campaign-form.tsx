@@ -1,17 +1,14 @@
 "use client";
 
 import { useRef, useState, useTransition } from "react";
-import { Check, ChevronsUpDown, Gem, X } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Campaign, Town } from "@/generated/prisma";
 
-import { updateCampaign } from "../server/actions";
-import { KEYWORD_SUGGESTIONS, TOWN_DISPLAY_NAMES } from "../../constants";
+import { TOWN_DISPLAY_NAMES } from "../../constants";
 import { CampaignFormSchema } from "../schemas";
 
-import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -30,20 +27,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import { cn } from "@/lib/utils";
+import { KeywordSelector } from "./keyword-selector";
+import { CampaignFundInput } from "./fund-input";
 
 interface Props {
   campaign?: Campaign; // edit if present, otherwise create
@@ -76,13 +61,12 @@ export const CampaignForm = ({ campaign, onSubmit, onCancel }: Props) => {
 
   const watch = form.watch;
   const watchedFund = watch("campaignFund") ?? 0;
-  // const originalFund = useRef(form.getValues("campaignFund") ?? 0);
   const originalFund = useRef(campaign?.campaignFund ?? 0);
   //Calc net change
   const fundDelta = watchedFund - originalFund.current;
 
   const handleSubmit = async (values: z.infer<typeof CampaignFormSchema>) => {
-    // mocked error, should probably be integrated to zod schema
+    // mocked error, should probably be integrated to zod schema later in time
     if (values.campaignFund > emeraldBalance) {
       form.setError("campaignFund", {
         message: "Fund exceeds your balance!",
@@ -132,105 +116,7 @@ export const CampaignForm = ({ campaign, onSubmit, onCancel }: Props) => {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="keywords"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel>Keywords</FormLabel>
-              {field.value.length > 0 && (
-                <div className="flex flex-wrap gap-2">
-                  {field.value.map((val) => {
-                    const label = KEYWORD_SUGGESTIONS.find(
-                      (k) => k.value === val
-                    )?.label;
-                    return (
-                      <div
-                        key={val}
-                        className="flex items-center gap-1 px-2 py-0.5 bg-muted rounded-full text-sm"
-                      >
-                        <span>{label}</span>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            const updated = field.value.filter(
-                              (k) => k !== val
-                            );
-                            field.onChange(updated);
-                          }}
-                          className="text-muted-foreground hover:text-foreground transition"
-                        >
-                          <X className="h-3 w-3 cursor-pointer" />
-                        </button>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      className="w-[200px] justify-between"
-                      disabled={isPending}
-                    >
-                      Add keyword...
-                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="w-[200px] p-0">
-                  <Command>
-                    <CommandInput placeholder="Search keyword..." />
-                    <CommandList>
-                      <CommandEmpty>No keyword found.</CommandEmpty>
-                      <CommandGroup>
-                        {KEYWORD_SUGGESTIONS.map((keyword) => (
-                          <CommandItem
-                            value={keyword.label}
-                            key={keyword.value}
-                            onSelect={() => {
-                              const currentValues = field.value || [];
-                              if (currentValues.includes(keyword.value)) {
-                                form.setValue(
-                                  "keywords",
-                                  currentValues.filter(
-                                    (k) => k !== keyword.value
-                                  )
-                                );
-                              } else {
-                                form.setValue("keywords", [
-                                  ...currentValues,
-                                  keyword.value,
-                                ]);
-                              }
-                            }}
-                          >
-                            {keyword.label}
-                            <Check
-                              className={cn(
-                                "ml-auto",
-                                field.value?.includes(keyword.value)
-                                  ? "opacity-100"
-                                  : "opacity-0"
-                              )}
-                            />
-                          </CommandItem>
-                        ))}
-                      </CommandGroup>
-                    </CommandList>
-                  </Command>
-                </PopoverContent>
-              </Popover>
-              <FormDescription>
-                Select maximum of 10 keywords to be associated with campaign
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <KeywordSelector form={form} isPending={isPending} />
         <FormField
           control={form.control}
           name="bidAmount"
@@ -250,68 +136,12 @@ export const CampaignForm = ({ campaign, onSubmit, onCancel }: Props) => {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="campaignFund"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Campaign fund</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder=""
-                  type="number"
-                  {...field}
-                  disabled={isPending}
-                  max={emeraldBalance + form.getValues("campaignFund")}
-                  onBlur={(e) => {
-                    const value = Number(e.target.value);
-                    if (
-                      value >
-                      emeraldBalance + form.getValues("campaignFund")
-                    ) {
-                      form.setValue("campaignFund", emeraldBalance);
-                    } else if (value < 0) {
-                      form.setValue("campaignFund", 0);
-                    }
-                  }}
-                />
-              </FormControl>
-              <FormDescription className="flex-col">
-                <span className="flex items-center">
-                  Current balance:
-                  <Gem className="text-emerald-500 w-4 h-4 mx-1" />
-                  {emeraldBalance}
-                </span>
-                <span className="flex items-center">
-                  {fundDelta > 0 &&
-                    field.value <= emeraldBalance + originalFund.current && (
-                      <>
-                        Balance after deduction:
-                        <Gem className="text-emerald-500 w-4 h-5 mx-1" />
-                        <span className="font-semibold text-red-400">
-                          {emeraldBalance - fundDelta}
-                        </span>
-                      </>
-                    )}
-                  {fundDelta < 0 &&
-                    field.value <= emeraldBalance + originalFund.current && (
-                      <>
-                        Balance after refund:
-                        <Gem className="text-emerald-500 w-4 h-5 mx-1" />
-                        <span className="font-semibold text-emerald-500">
-                          {emeraldBalance - fundDelta}
-                        </span>
-                      </>
-                    )}
-                  {field.value > emeraldBalance + originalFund.current && (
-                    <span className="text-red-500">Insufficient funds</span>
-                  )}
-                </span>
-              </FormDescription>
-
-              <FormMessage />
-            </FormItem>
-          )}
+        <CampaignFundInput
+          form={form}
+          emeraldBalance={emeraldBalance}
+          originalFund={originalFund}
+          fundDelta={fundDelta}
+          isPending={isPending}
         />
         <FormField
           control={form.control}
@@ -381,9 +211,6 @@ export const CampaignForm = ({ campaign, onSubmit, onCancel }: Props) => {
             </FormItem>
           )}
         />
-        {/* <Button type="submit" disabled={isPending}>
-          {campaign ? "Update" : "Create"}
-        </Button> */}
       </form>
     </Form>
   );
