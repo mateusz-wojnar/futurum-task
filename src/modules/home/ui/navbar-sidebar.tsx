@@ -1,4 +1,5 @@
 import Link from "next/link";
+
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Sheet,
@@ -40,8 +41,9 @@ export const NavbarSidebar = ({ items, open, onOpenChange }: Props) => {
             <Link
               href="/products"
               className="flex w-full text-left p-4 hover:bg-black hover:text-white items-center text-base font-medium"
+              onClick={() => onOpenChange(false)}
             >
-              Add campaigns
+              Create Campaigns
             </Link>
           </div>
         </ScrollArea>

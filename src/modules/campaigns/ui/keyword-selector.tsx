@@ -1,3 +1,7 @@
+import { UseFormReturn } from "react-hook-form";
+import { z } from "zod";
+import { Check, ChevronsUpDown, X } from "lucide-react";
+
 import {
   FormControl,
   FormDescription,
@@ -6,7 +10,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Button } from "@/components/ui/button";
 import {
   Popover,
   PopoverContent,
@@ -20,11 +23,10 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import { Check, ChevronsUpDown, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
 import { cn } from "@/lib/utils";
 import { KEYWORD_SUGGESTIONS } from "../../constants";
-import { UseFormReturn } from "react-hook-form";
-import { z } from "zod";
 import { CampaignFormSchema } from "../schemas";
 
 interface KeywordSelectorProps {

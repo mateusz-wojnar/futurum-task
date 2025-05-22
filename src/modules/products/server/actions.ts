@@ -2,6 +2,8 @@
 
 import { prisma } from "@/lib/db";
 
+// later to refine with error handling
+
 export const getProductsWithCampaigns = async () => {
   const productsWithCampaigns = prisma.product.findMany({
     include: {
@@ -13,7 +15,6 @@ export const getProductsWithCampaigns = async () => {
 };
 
 export const getSingleProductWithCampaigns = async (id: string) => {
-  
   const productWithCampaign = prisma.product.findUnique({
     where: {
       id,

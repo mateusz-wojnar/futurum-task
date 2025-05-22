@@ -1,13 +1,14 @@
-import ProductCard from "@/modules/products/ui/product-card";
-import { getProductsWithCampaigns } from "@/modules/products/server/actions";
-import React from "react";
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
+
+import ProductCard from "@/modules/products/ui/product-card";
+
+import { Button } from "@/components/ui/button";
+import { getProductsWithCampaigns } from "@/modules/products/server/actions";
 
 const Page = async () => {
   const products = await getProductsWithCampaigns();
   return (
-    <section className="max-w-7xl w-full flex flex-col mx-auto items-center mt-5">
+    <section className="container w-full flex flex-col mx-auto items-center mt-5">
       <header className="flex justify-center lg:text-4xl md:text-2xl text-xl mb-5">
         Viewing all products ({products ? products.length : 0})
       </header>
@@ -15,7 +16,7 @@ const Page = async () => {
         <Button variant="link">
           <Link href="/campaigns">
             {" "}
-            If you want to see combined campaigns, go to campaigns
+            Go to combined campaigns
           </Link>
         </Button>
       </div>

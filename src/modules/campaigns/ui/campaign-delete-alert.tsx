@@ -1,6 +1,8 @@
 "use client";
 
 import { useTransition, useState } from "react";
+import { Trash2 } from "lucide-react";
+
 import {
   AlertDialog,
   AlertDialogTrigger,
@@ -12,13 +14,13 @@ import {
   AlertDialogCancel,
   AlertDialogAction,
 } from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
 import { deleteCampaign } from "../server/actions";
 
 interface CampaignDeleteAlertProps {

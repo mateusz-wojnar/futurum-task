@@ -1,12 +1,10 @@
-import { prisma } from "@/lib/db";
-import ProductCard from "../../modules/products/ui/product-card";
+import { Hero } from "@/modules/home/ui/hero";
 
 export default async function Home() {
-  const products = await prisma.product.findMany();
 
   return (
-    <div>
-      <p>Home</p>
-    </div>
+    <main>
+      <Hero/>
+    </main>
   );
 }

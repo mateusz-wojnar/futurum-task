@@ -9,6 +9,9 @@ import { Campaign, Town } from "@/generated/prisma";
 import { TOWN_DISPLAY_NAMES } from "../../constants";
 import { CampaignFormSchema } from "../schemas";
 
+import { KeywordSelector } from "./keyword-selector";
+import { CampaignFundInput } from "./fund-input";
+
 import {
   Form,
   FormControl,
@@ -27,8 +30,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { KeywordSelector } from "./keyword-selector";
-import { CampaignFundInput } from "./fund-input";
 
 interface Props {
   campaign?: Campaign; // edit if present, otherwise create

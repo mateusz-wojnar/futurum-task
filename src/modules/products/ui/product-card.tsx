@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { format } from "date-fns";
 
 import {
@@ -16,8 +18,6 @@ import { CampaignDataTable } from "@/modules/campaigns/ui/campaign-data-table";
 import { columns } from "@/modules/campaigns/ui/campaign-columns";
 import { CampaignCreateDialog } from "@/modules/campaigns/ui/campaign-create-dialog";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 
 interface ProductCardProps {
   product: ProductsWithCampaigns;
@@ -35,7 +35,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
             Created at: {format(product.createdAt, "dd MMMM yyy / k:m")}
           </CardDescription>
         </div>
-        <div className="flex">
+        <div className="hidden md:flex">
           {path !== `/products/${product.id}` && (
             <div className="mr-2">
               <Button asChild variant="link">
@@ -56,7 +56,28 @@ const ProductCard = ({ product }: ProductCardProps) => {
           <p className="text-sm text-red-400">No campaigns found...</p>
         )}
       </CardContent>
-      <CardFooter></CardFooter>
+      <CardFooter className="flex flex-col">
+        <div className="md:hidden flex flex-col gap-2 w-full">
+          {path !== `/products/${product.id}` && (
+            <div className="flex sm:flex-row w-full">
+              <Button asChild variant="link" className="w-full">
+                <Link
+                  href={`/products/${product.id}`}
+                  className="flex items-center"
+                >
+                  Show product
+                </Link>
+              </Button>
+            </div>
+          )}
+          <div className="flex sm:flex-row w-full">
+            <CampaignCreateDialog
+              productId={product.id}
+              productName={product.name}
+            />
+          </div>
+        </div>
+      </CardFooter>
     </Card>
   );
 };

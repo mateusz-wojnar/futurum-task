@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { z } from "zod";
 
 import {
   Dialog,
@@ -9,8 +10,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+
 import { CampaignForm } from "./campaign-form";
-import { z } from "zod";
 import { CampaignFormSchema } from "../schemas";
 import { createCampaign } from "../server/actions";
 
@@ -35,7 +36,9 @@ export const CampaignCreateDialog = ({ productId, productName }: Props) => {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <Button onClick={() => setOpen(true)}>Add campaign</Button>
+      <Button onClick={() => setOpen(true)} className="w-full md:w-fit">
+        Add campaign
+      </Button>
 
       <DialogContent className="max-h-[90vh] flex flex-col">
         <DialogHeader>

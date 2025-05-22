@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { Poppins } from "next/font/google";
+import Link from "next/link";
+import { MenuIcon } from "lucide-react";
+
+import { NavbarSidebar } from "./navbar-sidebar";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { NavbarSidebar } from "./navbar-sidebar";
-import { MenuIcon } from "lucide-react";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -72,7 +73,7 @@ const Navbar = () => {
           className="border-l border-t-0 border-b-0 border-r-0 px-12 h-full rounded-none bg-black text-white hover:bg-emerald-500 hover:text-black transition-colors text-lg"
         >
           <Link prefetch href="/products">
-            Add campaigns
+            Create Campaigns
           </Link>
         </Button>
       </div>

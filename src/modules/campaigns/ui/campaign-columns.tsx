@@ -2,9 +2,9 @@
 
 import { Campaign, Town } from "@/generated/prisma";
 import { ColumnDef } from "@tanstack/react-table";
+import { TOWN_DISPLAY_NAMES } from "@/modules/constants";
 
 import { CampaignEditDialog } from "./campaign-edit-dialog";
-import { TOWN_DISPLAY_NAMES } from "@/modules/constants";
 import { CampaignDeleteAlert } from "./campaign-delete-alert";
 import { DataTableColumnHeader } from "./campaign-data-table-column";
 
@@ -101,7 +101,8 @@ export const columns: ColumnDef<Campaign>[] = [
     },
   },
 
-  //Adding actions definitions
+  //Separation - actions below
+
   {
     id: "actions",
     cell: ({ row }) => {

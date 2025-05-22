@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { Settings2 } from "lucide-react";
+
 import { Table } from "@tanstack/react-table";
 
 import { Button } from "@/components/ui/button";
