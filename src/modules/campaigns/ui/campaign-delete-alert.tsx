@@ -22,6 +22,7 @@ import {
 import { Button } from "@/components/ui/button";
 
 import { deleteCampaign } from "../server/actions";
+import { toast } from "sonner";
 
 interface CampaignDeleteAlertProps {
   campaignId: string;
@@ -32,16 +33,20 @@ interface CampaignDeleteAlertProps {
 export const CampaignDeleteAlert = ({
   campaignId,
   campaignName,
-  onDeleted,
 }: CampaignDeleteAlertProps) => {
   const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
 
   const handleDelete = () => {
     startTransition(async () => {
-      await deleteCampaign(campaignId);
-      setOpen(false);
-      onDeleted?.();
+      const res = await deleteCampaign(campaignId);
+      if (res.success) {
+        toast.success("Succesfully deleted campaign!");
+        setOpen(false);
+      } else {
+        toast.error("Something went wrong!");
+        setOpen(false);
+      }
     });
   };
 

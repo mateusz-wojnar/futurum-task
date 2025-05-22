@@ -38,7 +38,7 @@ interface Props {
   onCancel?: () => void; //to close dialogs
 }
 
-export const CampaignForm = ({ campaign, onSubmit }: Props) => {
+export const CampaignForm = ({ campaign, onSubmit}: Props) => {
   const [isPending, startTransition] = useTransition();
 
   // Mocked emerald funds, only in state and fetched/updated to localStorage

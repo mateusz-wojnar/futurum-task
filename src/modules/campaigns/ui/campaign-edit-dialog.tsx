@@ -25,6 +25,7 @@ import { Button } from "@/components/ui/button";
 import { CampaignForm } from "./campaign-form";
 import { updateCampaign } from "../server/actions";
 import { CampaignFormSchema } from "../schemas";
+import { toast } from "sonner";
 
 interface Props {
   campaign: Campaign;
@@ -38,10 +39,10 @@ export const CampaignEditDialog = ({ campaign }: Props) => {
     const res = await updateCampaign(campaign.id, values);
 
     if (res.success) {
-      console.log("Campaign updated!");
+      toast.success("Succesfully edited campaign!");
       setOpen(false);
     } else {
-      console.error(res.error);
+      toast.error("Something went wrong!");
     }
   };
 
@@ -74,10 +75,7 @@ export const CampaignEditDialog = ({ campaign }: Props) => {
         </DialogHeader>
 
         <div className="overflow-y-auto px-1 mt-4 flex-1">
-          <CampaignForm
-            campaign={campaign}
-            onSubmit={onSubmit}
-          />
+          <CampaignForm campaign={campaign} onSubmit={onSubmit} />
         </div>
         <DialogFooter className="pt-4">
           <Button variant="outline" onClick={() => setOpen(false)}>

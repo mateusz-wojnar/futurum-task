@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { CampaignForm } from "./campaign-form";
 import { CampaignFormSchema } from "../schemas";
 import { createCampaign } from "../server/actions";
+import { toast } from "sonner";
 
 interface Props {
   productId: string;
@@ -27,10 +28,10 @@ export const CampaignCreateDialog = ({ productId, productName }: Props) => {
     const res = await createCampaign(productId, values);
 
     if (res.success) {
-      console.log("Campaign created!");
+      toast.success("Succesfully created campaign!");
       setOpen(false);
     } else {
-      console.error(res.error);
+      toast.error("Something went wrong!");
     }
   };
 
@@ -49,10 +50,7 @@ export const CampaignCreateDialog = ({ productId, productName }: Props) => {
         </DialogHeader>
 
         <div className="overflow-y-auto px-1 mt-4 flex-1">
-          <CampaignForm
-            productId={productId}
-            onSubmit={onSubmit}
-          />
+          <CampaignForm productId={productId} onSubmit={onSubmit} />
         </div>
 
         <DialogFooter className="pt-4">
