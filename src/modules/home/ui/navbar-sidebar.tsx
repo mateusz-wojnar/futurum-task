@@ -38,10 +38,10 @@ export const NavbarSidebar = ({ items, open, onOpenChange }: Props) => {
           ))}
           <div className="border-t">
             <Link
-              href="/campaign/add"
+              href="/products"
               className="flex w-full text-left p-4 hover:bg-black hover:text-white items-center text-base font-medium"
             >
-              Add campaign
+              Add campaigns
             </Link>
           </div>
         </ScrollArea>

@@ -71,8 +71,8 @@ const Navbar = () => {
           variant="secondary"
           className="border-l border-t-0 border-b-0 border-r-0 px-12 h-full rounded-none bg-black text-white hover:bg-emerald-500 hover:text-black transition-colors text-lg"
         >
-          <Link prefetch href="/campaigns/add">
-            Add campaign
+          <Link prefetch href="/products">
+            Add campaigns
           </Link>
         </Button>
       </div>

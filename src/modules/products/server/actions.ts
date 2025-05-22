@@ -11,3 +11,17 @@ export const getProductsWithCampaigns = async () => {
 
   return productsWithCampaigns;
 };
+
+export const getSingleProductWithCampaigns = async (id: string) => {
+  
+  const productWithCampaign = prisma.product.findUnique({
+    where: {
+      id,
+    },
+    include: {
+      campaigns: true,
+    },
+  });
+
+  return productWithCampaign!;
+};

@@ -32,7 +32,7 @@ interface KeywordSelectorProps {
   isPending?: boolean;
 }
 
-export function KeywordSelector({ form, isPending }: KeywordSelectorProps) {
+export const KeywordSelector = ({ form, isPending }: KeywordSelectorProps) => {
   return (
     <FormField
       control={form.control}
@@ -134,4 +134,4 @@ export function KeywordSelector({ form, isPending }: KeywordSelectorProps) {
       )}
     />
   );
-}
+};

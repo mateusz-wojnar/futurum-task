@@ -110,3 +110,24 @@ export const deleteCampaign = async (id: string) => {
     return { error: "Failed to delete campaign." };
   }
 };
+
+export const getAllCampaigns = async () => {
+  try {
+    const campaigns = await prisma.campaign.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    return {
+      success: true,
+      data: campaigns,
+    };
+  } catch (error) {
+    console.error("Failed to fetch campaigns:", error);
+    return {
+      success: false,
+      error: "Could not load campaigns.",
+    };
+  }
+};
