@@ -6,7 +6,7 @@ import { Poppins } from "next/font/google";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { NavbarSidebar } from "./navbar-sidebar";
-import { MenuIcon } from "lucide-react";
+import { Gem, MenuIcon } from "lucide-react";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -86,7 +86,6 @@ const Navbar = () => {
           <MenuIcon />
         </Button>
       </div>
-      
     </nav>
   );
 };

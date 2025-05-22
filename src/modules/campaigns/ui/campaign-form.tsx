@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useTransition } from "react";
-import { Check, ChevronsUpDown, X } from "lucide-react";
+import { useRef, useState, useTransition } from "react";
+import { Check, ChevronsUpDown, Gem, X } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -55,11 +55,17 @@ interface Props {
 export const CampaignForm = ({ campaign, onSubmit, onCancel }: Props) => {
   const [isPending, startTransition] = useTransition();
 
+  // Mocked emerald funds, only in state and fetched/updated to localStorage
+  const [emeraldBalance, setEmeraldBalance] = useState<number>(() => {
+    const stored = localStorage.getItem("emeraldBalance");
+    return stored ? parseInt(stored, 10) : 25000;
+  });
+
   const form = useForm<z.infer<typeof CampaignFormSchema>>({
     resolver: zodResolver(CampaignFormSchema),
     defaultValues: {
       name: campaign?.name ?? "",
-      keywords: campaign?.keywords ?? [""],
+      keywords: campaign?.keywords ?? [],
       bidAmount: campaign?.bidAmount ?? 0,
       campaignFund: campaign?.campaignFund ?? 0,
       status: campaign?.status ?? false,
@@ -68,12 +74,43 @@ export const CampaignForm = ({ campaign, onSubmit, onCancel }: Props) => {
     },
   });
 
+  const watch = form.watch;
+  const watchedFund = watch("campaignFund") ?? 0;
+  // const originalFund = useRef(form.getValues("campaignFund") ?? 0);
+  const originalFund = useRef(campaign?.campaignFund ?? 0);
+  //Calc net change
+  const fundDelta = watchedFund - originalFund.current;
+
   const handleSubmit = async (values: z.infer<typeof CampaignFormSchema>) => {
+    // mocked error, should probably be integrated to zod schema
+    if (values.campaignFund > emeraldBalance) {
+      form.setError("campaignFund", {
+        message: "Fund exceeds your balance!",
+      });
+      return;
+    }
+
     startTransition(() => {
-      onSubmit(values);
+      try {
+        onSubmit(values);
+      } catch (err) {
+        console.error(err, "Something went wrong");
+        return;
+      }
+
+      const delta = values.campaignFund - originalFund.current;
+
+      if (delta !== 0) {
+        setEmeraldBalance((prev) => {
+          const newBalance = prev - delta;
+          localStorage.setItem("emeraldBalance", newBalance.toString());
+          return newBalance;
+        });
+      }
     });
   };
 
+  form.getValues("campaignFund");
   return (
     <Form {...form}>
       <form
@@ -221,13 +258,57 @@ export const CampaignForm = ({ campaign, onSubmit, onCancel }: Props) => {
               <FormLabel>Campaign fund</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="0"
+                  placeholder=""
                   type="number"
                   {...field}
                   disabled={isPending}
+                  max={emeraldBalance + form.getValues("campaignFund")}
+                  onBlur={(e) => {
+                    const value = Number(e.target.value);
+                    if (
+                      value >
+                      emeraldBalance + form.getValues("campaignFund")
+                    ) {
+                      form.setValue("campaignFund", emeraldBalance);
+                    } else if (value < 0) {
+                      form.setValue("campaignFund", 0);
+                    }
+                  }}
                 />
               </FormControl>
-              <FormDescription>Campaign funding budget</FormDescription>
+              <FormDescription className="flex-col">
+                <span className="flex items-center">
+                  Current balance:
+                  <Gem className="text-emerald-500 w-4 h-4 mx-1" />
+                  {emeraldBalance}
+                </span>
+                <span className="flex items-center">
+                  {fundDelta > 0 &&
+                    field.value <= emeraldBalance + originalFund.current && (
+                      <>
+                        Balance after deduction:
+                        <Gem className="text-emerald-500 w-4 h-5 mx-1" />
+                        <span className="font-semibold text-red-400">
+                          {emeraldBalance - fundDelta}
+                        </span>
+                      </>
+                    )}
+                  {fundDelta < 0 &&
+                    field.value <= emeraldBalance + originalFund.current && (
+                      <>
+                        Balance after refund:
+                        <Gem className="text-emerald-500 w-4 h-5 mx-1" />
+                        <span className="font-semibold text-emerald-500">
+                          {emeraldBalance - fundDelta}
+                        </span>
+                      </>
+                    )}
+                  {field.value > emeraldBalance + originalFund.current && (
+                    <span className="text-red-500">Insufficient funds</span>
+                  )}
+                </span>
+              </FormDescription>
+
               <FormMessage />
             </FormItem>
           )}
