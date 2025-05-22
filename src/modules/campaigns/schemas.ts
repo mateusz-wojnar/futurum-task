@@ -4,7 +4,7 @@ export const CampaignFormSchema = z.object({
   name: z
     .string()
     .min(3, "Name should be minimum 3 characters long")
-    .max(50, "Name should maximum 50 characters long"),
+    .max(25, "Name should maximum 25 characters long"),
   keywords: z
     .array(
       z
